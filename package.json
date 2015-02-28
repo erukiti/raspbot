@@ -17,6 +17,7 @@
     "hubot": "^2.11.1",
     "hubot-redis-brain": "0.0.2",
     "hubot-slack": "^3.2.1",
+    "hubot-tiqav": "0.0.2",
     "jison": "^0.4.15",
     "shellwords": "^0.1.0",
     "zombie": "^2.5.1"
