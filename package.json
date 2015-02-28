@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cheerio": "^0.18.0",
     "coffee-script": "^1.9.1",
     "cron": "^1.0.6",
     "csv": "^0.4.1",
