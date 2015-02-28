@@ -1,3 +1,6 @@
+# Commands:
+#   LGTM - Looking Good To Me.
+
 cheerio = require 'cheerio'
 
 module.exports = (robot) ->
