@@ -2,7 +2,7 @@
 #   Utility commands surrounding Hubot uptime.
 #
 # Commands:
-#   hubot say <text> - えるきち家のゆっくりが <text> をしゃべります
+#   hubot say <text> - えるきち家のゆっくりが <text> を喋る
 
 shellwords = require 'shellwords'
 child_process = require 'child_process'

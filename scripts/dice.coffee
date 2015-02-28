@@ -1,5 +1,5 @@
 # Commands:
-#   <m>d<n> - ダイス振ります ex. 3d6 + 1d10 + 3
+#   <m>d<n> - ダイス振る ex. 3d6 + 1d10 + 3
 
 dice = require '../dice'
 
