@@ -3,6 +3,15 @@
 
 jison = require 'jison'
 
+dice = (text) ->
+  matched = text.split('d')
+  return 0 if matched[0] == '0' || matched[1] == '0'
+
+  acc = 0
+  for i in [0...matched[0]]
+    acc += Math.floor(Math.random() * matched[1]) + 1
+  acc
+
 grammer = 
   "lex":
     "rules": [
@@ -36,13 +45,9 @@ grammer =
       [ "- e",     "$$ = -$2;", {"prec": "UMINUS"} ]
       [ "( e )",   "$$ = $2;" ]
       ["NUMBER",   "$$ = Number(yytext);"]
-      ["DICE",     "matched = $1.match(/^([0-9]+)d([0-9]+)$/)\n" +
-                   "var acc = 0;\n" + 
-                   "for (var i = 0; i < matched[1]; i++) {\n" +
-                   "  acc += Math.floor(Math.random() * matched[2]) + 1;\n" +
-                   "}\n" + 
-                   "$$ = acc;\n"]
+      ["DICE",     "$$ = dice(yytext);"]
     ]
+  "actionInclude": "dice = " + dice
 
 parser = new jison.Parser(grammer)
 
@@ -55,6 +60,5 @@ module.exports = (robot) ->
     else
       base = 10
       prefix = ''
-    console.dir base
     rolled = parser.parse(expr)
     msg.send prefix + rolled.toString(base) if Number(expr) != rolled
