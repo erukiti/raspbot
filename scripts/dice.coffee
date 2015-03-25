@@ -4,6 +4,7 @@
 dice = require '../dice'
 
 module.exports = (robot) ->
-  robot.hear /([0-9d()+\-*\/>=<]+)/i, (msg) ->
-    rolled = dice.parse(msg.match[1])
-    msg.send "#{rolled}"
+  robot.hear /^([0-9d()+\-*\/]+)$/i, (msg) ->
+    expr = msg.match[1]
+    rolled = dice.parse(expr)
+    msg.send "#{rolled}" if expr != rolled
