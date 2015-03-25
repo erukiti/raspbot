@@ -18,7 +18,7 @@ grammer =
       ["\\s+",                    "/* skip whitespace */"]
       ["0x[0-9a-fA-F]+\\b",       "return 'NUMBER';"]
       ["[0-9]{1,2}d[0-9]{1,3}",   "return 'DICE';"]
-      ["[0-9]+(\\.[0-9]+)?\\b",   "return 'NUMBER';"]
+      ["[0-9]+(\\.[0-9]+)?([eE][\\+\\-]?[0-9]+)?\\b", "return 'NUMBER';"]
       ["\\/",                     "return '/';"]
       ["\\*",                     "return '*';"]
       ["-",                       "return '-';"]
@@ -62,7 +62,7 @@ grammer =
       [ "n % n",   "$$ = $1 % $3;" ]
       [ "- n",     "$$ = -$2;", {"prec": "UMINUS"} ]
       [ "( n )",   "$$ = $2;" ]
-      ["NUMBER",   "$$ = Number(yytext);"]
+      ["NUMBER",   "console.dir(Number(yytext)); $$ = Number(yytext);"]
       ["DICE",     "$$ = dice(yytext);"]
     ]
   "actionInclude": "dice = #{dice};"
@@ -72,6 +72,7 @@ parser = new jison.Parser(grammer)
 module.exports = (robot) ->
   robot.hear /^([0-9a-fA-Fdx()+\-*\/%>=<\. \t]+)(\bin hex)?$/i, (msg) ->
     expr = msg.match[1]
+    console.dir expr
     if msg.match[2] == 'in hex'
       base = 16
       prefix = '0x'
@@ -79,4 +80,4 @@ module.exports = (robot) ->
       base = 10
       prefix = ''
     rolled = parser.parse(expr)
-    msg.send prefix + rolled.toString(base) if expr.trim() != prefix + rolled.toString(base)
+    msg.send prefix + rolled.toString(base) if expr.trim().toLowerCase() != prefix + rolled.toString(base).toLowerCase()
