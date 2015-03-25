@@ -79,4 +79,4 @@ module.exports = (robot) ->
       base = 10
       prefix = ''
     rolled = parser.parse(expr)
-    msg.send prefix + rolled.toString(base) if Number(expr) != rolled
+    msg.send prefix + rolled.toString(base) if expr.trim() != prefix + rolled.toString(base)
