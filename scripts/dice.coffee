@@ -8,7 +8,7 @@ grammer =
     "rules": [
       ["\\s+",                    "/* skip whitespace */"]
       ["0x[0-9a-fA-F]+\\b",       "return 'NUMBER';"]
-      ["[0-9]{1,2}d[0-9]{1,3}",      "return 'DICE';"]
+      ["[0-9]{1,2}d[0-9]{1,3}",   "return 'DICE';"]
       ["[0-9]+(\\.[0-9]+)?\\b",   "return 'NUMBER';"]
       ["\\/",                     "return '/';"]
       ["\\*",                     "return '*';"]
@@ -47,7 +47,14 @@ grammer =
 parser = new jison.Parser(grammer)
 
 module.exports = (robot) ->
-  robot.hear /^([0-9a-fA-Fdx()+\-*\/%\. \t]+)$/i, (msg) ->
+  robot.hear /^([0-9a-fA-Fdx()+\-*\/%\. \t]+)(\bin hex)?$/i, (msg) ->
     expr = msg.match[1]
+    if msg.match[2] == 'in hex'
+      base = 16
+      prefix = '0x'
+    else
+      base = 10
+      prefix = ''
+    console.dir base
     rolled = parser.parse(expr)
-    msg.send "#{rolled}" if Number(expr) != rolled
+    msg.send prefix + rolled.toString(base) if Number(expr) != rolled
