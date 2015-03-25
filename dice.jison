@@ -2,10 +2,12 @@
 %%
 
 \s+                   /* skip whitespace */
+"0x"[0-9a-fA-F]+      return 'HEX'
 [0-9]{1,2}d[0-9]{1,3} return 'DICE'
 [0-9]+\b              return 'NUMBER'
 "*"                   return '*'
 "/"                   return '/'
+"%"                   return '%'
 "-"                   return '-'
 "+"                   return '+'
 "("                   return '('
@@ -18,7 +20,7 @@
 /* operator associations and precedence */
 
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %left UMINUS
 
 
@@ -35,9 +37,11 @@ e
     | e '-' e            {$$ = $1 - $3;}
     | e '*' e            {$$ = $1 * $3;}
     | e '/' e            {$$ = $1 / $3;}
+    | e '%' e            {$$ = $1 % $3;}
     | '-' e %prec UMINUS {$$ = -$2;}
     | '(' e ')'          {$$ = $2;}
-    | NUMBER             {$$ = Number ($1);}
+    | NUMBER             {$$ = Number($1);}
+    | HEX                {$$ = Number($1);}
     | DICE               {{
                             matched = $1.match(/^([0-9]+)d([0-9]+)$/)
                             var acc = 0;
