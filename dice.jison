@@ -10,6 +10,10 @@
 "+"                   return '+'
 "("                   return '('
 ")"                   return ')'
+">="                  return '>='
+">"                   return '>'
+"<="                  return '<='
+"<"                   return '<'
 <<EOF>>               return 'EOF'
 .                     return 'INVALID'
 
@@ -19,10 +23,9 @@
 
 %left '+' '-'
 %left '*' '/'
-%left '^'
-%right '!'
-%right '%'
+%left '>=' '>' '<=' '<' 
 %left UMINUS
+
 
 %start expressions
 
@@ -37,6 +40,10 @@ e
     | e '-' e            {$$ = $1 - $3;}
     | e '*' e            {$$ = $1 * $3;}
     | e '/' e            {$$ = $1 / $3;}
+    | e '>=' e           {$$ = $1 >= $3;}
+    | e '>' e            {$$ = $1 > $3;}
+    | e '<=' e           {$$ = $1 <= $3;}
+    | e '<' e            {$$ = $1 < $3;}
     | '-' e %prec UMINUS {$$ = -$2;}
     | '(' e ')'          {$$ = $2;}
     | NUMBER             {$$ = Number ($1);}
