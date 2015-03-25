@@ -26,33 +26,51 @@ grammer =
       ["\\%",                     "return '%';"]
       ["\\(",                     "return '(';"]
       ["\\)",                     "return ')';"]
+      [">=",                      "return '>=';"]
+      ["<=",                      "return '>=';"]
+      ["==",                      "return '==';"]
+      ["=",                       "return '=';"]
+      [">",                       "return '>';"]
+      ["<",                       "return '<';"]
       ["$",                       "return 'EOF';"]
     ]
   "operators": [
+    ["left", ">=", "<=", ">", "<", "="]
     ["left", "+", "-"]
     ["left", "*", "/", "%"]
     ["left", "UMINUS"]
   ]
   "bnf":
-    "expressions": [["e EOF", "return $1;"]]
+    "expressions": [
+      ["b EOF", "return $1;"]
+      ["n EOF", "return $1;"]
+    ]
 
-    "e" : [
-      [ "e + e",   "$$ = $1 + $3;" ]
-      [ "e - e",   "$$ = $1 - $3;" ]
-      [ "e * e",   "$$ = $1 * $3;" ]
-      [ "e / e",   "$$ = $1 / $3;" ]
-      [ "e % e",   "$$ = $1 % $3;" ]
-      [ "- e",     "$$ = -$2;", {"prec": "UMINUS"} ]
-      [ "( e )",   "$$ = $2;" ]
+    "b" : [
+      ["n >= n",   "$$ = $1 >= $3;"]
+      ["n <= n",   "$$ = $1 <= $3;"]
+      ["n = n",    "$$ = $1 == $3;"]
+      ["n > n",    "$$ = $1 > $3;"]
+      ["n < n",    "$$ = $1 < $3;"]
+      ["( b )",    "$$ = $2;"]
+    ]
+    "n" : [
+      [ "n + n",   "$$ = $1 + $3;" ]
+      [ "n - n",   "$$ = $1 - $3;" ]
+      [ "n * n",   "$$ = $1 * $3;" ]
+      [ "n / n",   "$$ = $1 / $3;" ]
+      [ "n % n",   "$$ = $1 % $3;" ]
+      [ "- n",     "$$ = -$2;", {"prec": "UMINUS"} ]
+      [ "( n )",   "$$ = $2;" ]
       ["NUMBER",   "$$ = Number(yytext);"]
       ["DICE",     "$$ = dice(yytext);"]
     ]
-  "actionInclude": "dice = " + dice
+  "actionInclude": "dice = #{dice};"
 
 parser = new jison.Parser(grammer)
 
 module.exports = (robot) ->
-  robot.hear /^([0-9a-fA-Fdx()+\-*\/%\. \t]+)(\bin hex)?$/i, (msg) ->
+  robot.hear /^([0-9a-fA-Fdx()+\-*\/%>=<\. \t]+)(\bin hex)?$/i, (msg) ->
     expr = msg.match[1]
     if msg.match[2] == 'in hex'
       base = 16
